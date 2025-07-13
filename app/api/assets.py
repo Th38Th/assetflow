@@ -3,6 +3,7 @@ from fastapi.responses import FileResponse
 from sqlalchemy import ARRAY, String
 from sqlalchemy.orm import Session
 from typing import List
+import mimetypes
 
 from app.db.session import get_db
 from app.schemas.asset import AssetCreate, AssetRead
@@ -76,11 +77,15 @@ def download_asset(
     db: Session = Depends(get_db),
     current_user: UserInDB = Depends(get_current_user)
 ):
-    file_path = get_asset_file(db, asset_id, current_user)
+    file_result = get_asset_file(db, asset_id, current_user)
+    file_path = file_result[1]
+    file_name = file_result[0]
+    mime_type, _ = mimetypes.guess_type(file_path)
+    mime_type = mime_type or "application/octet-stream"
     return FileResponse(
-        path=file_path[1],
-        media_type="application/octet-stream",
-        filename=file_path[0]
+        path=file_path,
+        media_type=mime_type,
+        filename=file_name
     )
 
 @router.delete("/{asset_id}", response_model=Messsage, status_code=200)
