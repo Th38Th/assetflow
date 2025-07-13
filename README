@@ -1,0 +1,110 @@
+# AssetFlow
+
+A lightweight, modular FastAPI project for asset management.
+With user authentication, protected endpoints PostgreSQL and Redis integration. 
+Built with Docker support and test coverage using Pytest.
+
+## 🚀 Features
+
+- JWT-based authentication (access + refresh tokens)
+- User signup and login endpoints
+- Protected routes requiring valid tokens
+- Database migrations via Alembic
+- Dockerized environment
+- Unit testing with Pytest
+- Revoked JWTs kept in Redis Cache
+
+## 🛠 Tech Stack
+
+- FastAPI
+- PostgreSQL
+- SQLAlchemy
+- Alembic
+- Pytest
+- Docker
+- Redis
+
+## 🧪 Getting Started
+
+### Prerequisites
+
+- Python 3.11+
+- Docker & Docker Compose (optional but recommended)
+
+### Clone the repo
+
+```bash
+git clone https://github.com/th38th/assetflow.git
+cd assetflow
+```
+
+### Set up environment
+
+```bash
+cp .env.example .env  # Fill in your values
+pip install -r requirements.txt
+```
+
+## ▶️ Running the App
+
+### With Docker
+
+```bash
+docker-compose up -d --build
+```
+
+### Without Docker
+
+Make sure PostgreSQL is running, then:
+
+```bash
+alembic upgrade head
+uvicorn app.main:app --reload
+```
+
+## ✅ Running Tests
+
+```bash
+pytest -v
+```
+
+To override base URL:
+
+```bash
+pytest --base-url=http://localhost:8000
+```
+
+## 📚 API Docs
+
+Once running, open:
+
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+
+## 📂 Project Structure
+
+```
+├── app/
+│   ├── main.py
+│   ├── api/
+│   ├── core/
+│   ├── db/
+│   ├── models/
+│   ├── schemas/
+│   └── services/
+├── alembic/
+│   └── versions/
+├── tests/
+│   ├── conftest.py
+│   └── test_main.py
+├── requirements.txt
+├── alembic.ini
+├── pytest.ini
+├── Dockerfile
+├── docker-compose.yml
+└── README.md
+```
+
+## 📄 License
+
+MIT License. See `LICENSE` file for details.
