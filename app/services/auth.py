@@ -6,13 +6,16 @@ from app.core.security import get_password_hash, verify_password, create_access_
 
 def create_user(user_in: UserCreate, db: Session) -> User:
     existing_user = db.query(User).filter(User.username == user_in.username).first()
+    existing_user = existing_user or db.query(User).filter(User.email == user_in.email).first()
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Username already taken"
+            detail="Username/email already taken"
         )
     hashed_pw = get_password_hash(user_in.password)
-    user = User(username=user_in.username, hashed_password=hashed_pw)
+    user = User(username=user_in.username,
+                email=user_in.email,
+                hashed_password=hashed_pw)
     db.add(user)
     db.commit()
     db.refresh(user)

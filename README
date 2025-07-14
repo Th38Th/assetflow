@@ -1,8 +1,9 @@
 # AssetFlow
 
 A lightweight, modular FastAPI project for asset management.
-With user authentication, protected endpoints PostgreSQL and Redis integration. 
+With user authentication, protected endpoints, PostgreSQL and Redis integration. 
 Built with Docker support and test coverage using Pytest.
+Leverages Kafka for efficient communication between services.
 
 ## 🚀 Features
 
@@ -13,6 +14,7 @@ Built with Docker support and test coverage using Pytest.
 - Dockerized environment
 - Unit testing with Pytest
 - Revoked JWTs kept in Redis Cache
+- Messaging between api and email service using Kafka
 
 ## 🛠 Tech Stack
 
@@ -23,6 +25,7 @@ Built with Docker support and test coverage using Pytest.
 - Pytest
 - Docker
 - Redis
+- Kafka
 
 ## 🧪 Getting Started
 
@@ -89,6 +92,7 @@ Once running, open:
 │   ├── api/
 │   ├── core/
 │   ├── db/
+│   ├── kafka/
 │   ├── models/
 │   ├── schemas/
 │   └── services/
@@ -97,6 +101,9 @@ Once running, open:
 ├── tests/
 │   ├── conftest.py
 │   └── test_main.py
+├── notifier/
+│   ├── Dockerfile
+│   └── main.py
 ├── requirements.txt
 ├── alembic.ini
 ├── pytest.ini

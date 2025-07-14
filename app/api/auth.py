@@ -2,17 +2,24 @@ from fastapi import APIRouter, Body, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.db.session import get_db
+from datetime import datetime, timezone
 from app.schemas.user import UserCreate, TokenWithRefresh
 from app.schemas.message import Messsage
+from app.kafka.producer import send_event
 from app.core.security import oauth2_scheme, blacklist_token
 from app.services.auth import authenticate_user, create_user, create_access_token_for_user, create_refresh_token_for_user, refresh_token_for_user
 
 router = APIRouter()
 
 @router.post("/signup", response_model=TokenWithRefresh, status_code=status.HTTP_201_CREATED)
-def signup(user: UserCreate, db: Session = Depends(get_db)):
+async def signup(user: UserCreate, db: Session = Depends(get_db)):
     user = create_user(user, db)
     token = create_access_token_for_user(user)
+    await send_event("user.signup", {
+        "time": datetime.now(timezone.utc).isoformat(),
+        "username": user.username,
+        "email": user.email
+    })
     return {"access_token": token, "token_type": "Bearer"}
 
 @router.post("/login", response_model=TokenWithRefresh, status_code=status.HTTP_200_OK)

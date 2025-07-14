@@ -3,3 +3,4 @@ uploads/*
 .env
 .vscode/*
 **/__pycache__/
+notifier/.env
