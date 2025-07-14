@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Body, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.schemas.user import UserCreate, TokenWithRefresh
@@ -15,12 +16,12 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
     return {"access_token": token, "token_type": "Bearer"}
 
 @router.post("/login", response_model=TokenWithRefresh, status_code=status.HTTP_200_OK)
-def login(user: UserCreate, db: Session = Depends(get_db)):
-    auth_user = authenticate_user(user.username, user.password, db)
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    auth_user = authenticate_user(form_data.username, form_data.password, db)
     if not auth_user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    access_token = create_access_token_for_user(user)
-    refresh_token = create_refresh_token_for_user(user)
+    access_token = create_access_token_for_user(auth_user)
+    refresh_token = create_refresh_token_for_user(auth_user)
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "Bearer"}
 
 @router.post("/refresh", response_model=TokenWithRefresh, status_code=status.HTTP_202_ACCEPTED)

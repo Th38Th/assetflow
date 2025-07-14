@@ -36,7 +36,7 @@ def test_user(client):
 
 @pytest.fixture(scope="session")
 def auth_token(client,test_user):
-    response = client.post("/auth/login", json={
+    response = client.post("/auth/login", data={
         "username": test_user["username"],
         "password": test_user["password"]
     })

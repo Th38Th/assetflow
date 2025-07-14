@@ -18,11 +18,10 @@ services:
   db:
     image: postgres
     restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
 
   redis:
     image: redis
