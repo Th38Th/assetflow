@@ -15,11 +15,12 @@ router = APIRouter()
 async def signup(user: UserCreate, db: Session = Depends(get_db)):
     user = create_user(user, db)
     token = create_access_token_for_user(user)
-    await send_event("user.signup", {
-        "time": datetime.now(timezone.utc).isoformat(),
-        "username": user.username,
-        "email": user.email
-    })
+    if user.email is not None:
+        await send_event("user.signup", {
+            "time": datetime.now(timezone.utc).isoformat(),
+            "username": user.username,
+            "email": user.email
+        })
     return {"access_token": token, "token_type": "Bearer"}
 
 @router.post("/login", response_model=TokenWithRefresh, status_code=status.HTTP_200_OK)
